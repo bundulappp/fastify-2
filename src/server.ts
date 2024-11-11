@@ -1,14 +1,16 @@
-import createApp from "./controller/app";
-import { createPgClient } from "./db";
+import { CONFIG } from './config';
+import createApp from './controller/app';
+import { createPgClient } from './db';
 
-const PORT = 4400;
-
-const dbClient = createPgClient();
+const PORT = CONFIG.port;
+const dbClient = createPgClient({
+  connectionString: CONFIG.dbConnectionString,
+});
 
 const options = {
   logger: {
     level: 'debug',
-    transport: { target: 'pino-pretty' }
+    transport: { target: 'pino-pretty' },
   },
 };
 
@@ -19,5 +21,5 @@ app.listen({ port: PORT }, (error, address) => {
     app.log.error(error);
     process.exit(1);
   }
-  app.log.info(`Server is started successfully.`)
+  app.log.info(`Server is started successfully.`);
 });
