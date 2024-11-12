@@ -1,17 +1,15 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyInstance } from 'fastify';
 import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
-import { PetService } from '../service/pet.service';
 import { getAllPetSchema } from './schemas/pets/get-all-pet.schemas';
 import { postPetSchema } from './schemas/pets/post-pet.schema';
+import { RoutesDependencies } from './routes-dependencies';
+import { PetService } from '../service/pet.service';
 
-type RoutesDependencies = {
-  petService: PetService;
-};
 export async function registerPetRoutes(
   app: FastifyInstance,
-  dependencies: RoutesDependencies
+  dependencies: RoutesDependencies<PetService>
 ) {
-  const { petService } = dependencies;
+  const { service } = dependencies;
 
   const typedApp = app.withTypeProvider<JsonSchemaToTsProvider>();
 
@@ -21,7 +19,7 @@ export async function registerPetRoutes(
       schema: getAllPetSchema,
     },
     async () => {
-      const pets = await petService.getAll();
+      const pets = await service.getAll();
       return pets;
     }
   );
@@ -32,7 +30,7 @@ export async function registerPetRoutes(
       schema: postPetSchema,
     },
     async (request, reply) => {
-      const created = await petService.create(request.body);
+      const created = await service.create(request.body);
       reply.status(201);
       return created;
     }
