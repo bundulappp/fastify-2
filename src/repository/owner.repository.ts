@@ -14,7 +14,7 @@ export class OwnerRepository {
     };
   }
 
-  async read({ limit, offset }: { limit?: number; offset?: number }={}) {
+  async read({ limit, offset }: { limit?: number; offset?: number } = {}) {
     const sql = 'SELECT id, name, age FROM pet_owner LIMIT $1 OFFSET $2;';
     const rows = (await this.dbClinet.query(sql, [
       limit,
@@ -26,7 +26,7 @@ export class OwnerRepository {
   async create(owner: OwnerToCreate) {
     const { name, age } = owner;
     const sql = `
-      INSERT INTO pet_owner (name, age, weight_in_kg) VALUES 
+      INSERT INTO pet_owner (name, age) VALUES 
         ($1, $2) 
       RETURNING *
     `;
